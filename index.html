@@ -1,194 +1,61 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>경기 타이머</title>
+  <meta charset="UTF-8">
+  <title>사용자 입력 타이머</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin-top: 40px;
+      margin-top: 100px;
     }
-
-    .scoreboard {
-      margin-top: 80px; /* 원하는 여백 크기로 조절 (예: 60px) */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0; /* gap 대신 margin으로 개별 조절 */
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    #team1, #score1, #timer, #score2, #team2 {
-      flex-shrink: 0;
-    }
-
     #timer {
       font-size: 48px;
-      min-width: 140px;
-      text-align: center;
+      margin-bottom: 20px;
     }
-
-    input[type="text"], input[type="number"] {
-      background-color: transparent;
-      border: none;
-      outline: none;
-      text-align: center;
-    }
-
-    input.score {
+    input {
       width: 60px;
-      -moz-appearance: textfield;
+      font-size: 20px;
+      text-align: center;
     }
-
-    input.score::-webkit-outer-spin-button,
-    input.score::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    input.team {
-      width: 500px;
-    }
-
-    input.time {
-      width: 70px;
-      margin: 0 5px;
-      padding: 4px;
-      border: 1px solid #999;
-      border-radius: 4px;
-      background-color: white;
-      outline: none;
-    }
-
-    .controls {
-        margin-top: 100px;
-        font-size: 16px;
-    }
-
-    .customization {
-        margin-top: 40px;
-        font-size: 16px;
-    }
-
     button {
       font-size: 18px;
-      padding: 6px 14px;
+      padding: 8px 16px;
       margin: 5px;
-      border: 1px solid #333;
-      border-radius: 4px;
-      background-color: #f8f8f8;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #e0e0e0;
-    }
-
-    input[type="range"] {
-      width: 200px;
-    }
-
-    .custom-row {
-      margin-top: 15px;
-    }
-
-    /* 팀과 타이머 사이 간격 */
-    #team1 {
-      margin-right: var(--teamTimerGap, 40px);
-    }
-    #team2 {
-      margin-left: var(--teamTimerGap, 40px);
-    }
-
-    /* 점수와 타이머 사이 간격 */
-    #score1 {
-      margin-right: var(--scoreTimerGap, 20px);
-    }
-    #score2 {
-      margin-left: var(--scoreTimerGap, 20px);
     }
   </style>
 </head>
 <body>
-
-  <div class="scoreboard" id="scoreboard">
-    <input type="text" id="team1" class="team" placeholder="팀이름1" maxlength="20" style="font-size:20px;" />
-    <input type="number" id="score1" class="score" value="0" min="0" style="font-size:20px;" />
-
-    <div id="timer" style="font-size:48px;">00:00</div>
-
-    <input type="number" id="score2" class="score" value="0" min="0" style="font-size:20px;" />
-    <input type="text" id="team2" class="team" placeholder="팀이름2" maxlength="20" style="font-size:20px;" />
+  <div>
+    <label>분: <input type="number" id="inputMinutes" value="1" min="0"></label>
+    <label>초: <input type="number" id="inputSeconds" value="0" min="0" max="59"></label>
   </div>
+</br></br>
 
-  <div class="controls">
-    <label>분: <input type="number" id="inputMinutes" class="time" value="0" min="0"></label>
-    <label>초: <input type="number" id="inputSeconds" class="time" value="0" min="0" max="59"></label>
-    <button onclick="startTimer()">시작</button>
-    <button onclick="stopTimer()">중지</button>
-    <button onclick="resetTimer()">초기화</button>
-  </div>
+  <div id="timer">00:00</div>
 
-  <div class="customization">
-    <div class="custom-row">
-      <strong>타이머 글자 크기:</strong>
-      <input id="timerFontRange" type="range" min="20" max="100" value="48" oninput="changeTimerFontSize(this.value)" />
-      <span id="timerFontValue">48</span>px
-    </div>
-
-    <div class="custom-row">
-      <strong>팀 글자 크기:</strong>
-      <input id="teamFontRange" type="range" min="10" max="100" value="20" oninput="changeTeamFontSize(this.value)" />
-      <span id="teamFontValue">20</span>px
-    </div>
-
-    <div class="custom-row">
-      <strong>점수 글자 크기:</strong>
-      <input id="scoreFontRange" type="range" min="10" max="100" value="20" oninput="changeScoreFontSize(this.value)" />
-      <span id="scoreFontValue">20</span>px
-    </div>
-
-    <div class="custom-row">
-      <strong>팀과 타이머 사이 간격:</strong>
-      <input id="teamTimerGapRange" type="range" min="-200" max="100" value="0" oninput="changeTeamTimerGap(this.value)" />
-      <span id="teamTimerGapValue">40</span>px
-    </div>
-
-    <div class="custom-row">
-      <strong>점수와 타이머 사이 간격:</strong>
-      <input id="scoreTimerGapRange" type="range" min="0" max="150" value="20" oninput="changeScoreTimerGap(this.value)" />
-      <span id="scoreTimerGapValue">20</span>px
-    </div>
-
-    <div class="custom-row">
-      <button onclick="resetAll()">전체 리셋</button>
-    </div>
-  </div>
+  <button onclick="startTimer()">시작</button>
+  <button onclick="stopTimer()">중지</button>
 
   <script>
     let totalSeconds = 0;
     let timerInterval = null;
 
     function updateDisplay() {
-      const mins = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
-      const secs = String(totalSeconds % 60).padStart(2, "0");
-      document.getElementById("timer").textContent = `${mins}:${secs}`;
+      const mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const secs = String(totalSeconds % 60).padStart(2, '0');
+      document.getElementById('timer').textContent = `${mins}:${secs}`;
     }
 
     function startTimer() {
-      if (timerInterval !== null) return;
-
+      // 입력값에서 시작 시간 설정
       const inputMin = parseInt(document.getElementById("inputMinutes").value, 10) || 0;
       const inputSec = parseInt(document.getElementById("inputSeconds").value, 10) || 0;
+      totalSeconds = inputMin * 60 + inputSec;
 
-      if (totalSeconds === 0) {
-        totalSeconds = inputMin * 60 + inputSec;
-      }
+      if (timerInterval !== null) return; // 이미 작동 중이면 무시
 
-      updateDisplay();
-
+      updateDisplay(); // 시작 전 표시
       timerInterval = setInterval(() => {
         totalSeconds++;
         updateDisplay();
@@ -199,58 +66,6 @@
       clearInterval(timerInterval);
       timerInterval = null;
     }
-
-    function resetTimer() {
-      stopTimer();
-      totalSeconds = 0;
-      updateDisplay();
-    }
-
-    function changeTimerFontSize(size) {
-      document.getElementById("timer").style.fontSize = size + "px";
-      document.getElementById("timerFontValue").textContent = size;
-    }
-
-    function changeTeamFontSize(size) {
-      const teams = document.querySelectorAll(".team");
-      teams.forEach((el) => (el.style.fontSize = size + "px"));
-      document.getElementById("teamFontValue").textContent = size;
-    }
-
-    function changeScoreFontSize(size) {
-      const scores = document.querySelectorAll(".score");
-      scores.forEach((el) => (el.style.fontSize = size + "px"));
-      document.getElementById("scoreFontValue").textContent = size;
-    }
-
-    function changeTeamTimerGap(value) {
-      document.documentElement.style.setProperty("--teamTimerGap", value + "px");
-      document.getElementById("teamTimerGapValue").textContent = value;
-    }
-
-    function changeScoreTimerGap(value) {
-      document.documentElement.style.setProperty("--scoreTimerGap", value + "px");
-      document.getElementById("scoreTimerGapValue").textContent = value;
-    }
-
-    function resetAll() {
-      changeTimerFontSize(30);
-      changeTeamFontSize(30);
-      changeScoreFontSize(30);
-      changeTeamTimerGap(-180);
-      changeScoreTimerGap(0);
-
-      // 슬라이더 값도 함께 변경
-      document.getElementById("timerFontRange").value = 30;
-      document.getElementById("teamFontRange").value = 30;
-      document.getElementById("scoreFontRange").value = 30;
-      document.getElementById("teamTimerGapRange").value = -180;
-      document.getElementById("scoreTimerGapRange").value = 0;
-    }
-
-    window.onload = () => {
-      resetAll();
-    };
   </script>
 </body>
 </html>
